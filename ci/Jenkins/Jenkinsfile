@@ -6,8 +6,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/abdelbaki-bouzaienne/devops-demo-project.git'
-      }
+        git branch: 'main', url: 'https://github.com/ARISAWSS/-devops-demo-project.git'      }
     }
     stage('Build and Test') {
       steps {
@@ -28,8 +27,7 @@ pipeline {
     }
     stage('Build and Push Docker Image') {
       environment {
-        DOCKER_IMAGE = "abdelbakibouzaienne/demo-java-app:${build_version}"
-        REGISTRY_CREDENTIALS = credentials('dockerhub')
+        DOCKER_IMAGE = "ARISAWSS/demo-java-app:${build_version}"        REGISTRY_CREDENTIALS = credentials('dockerhub')
       }
       steps {
         script {
@@ -43,15 +41,13 @@ pipeline {
     }
     stage('Update Deployment File') {
         environment {
-            GIT_REPO_NAME = "devops-demo-project"
-            GIT_USER_NAME = "abdelbaki-bouzaienne"
-        }
+            GIT_REPO_NAME = "-devops-demo-project"
+            GIT_USER_NAME = "ARISAWSS"        }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
-                    git config user.email "abdelbaki.bouzaienne@gmail.com"
-                    git config user.name "abdelbaki-bouzaienne"
-                    sed -i "s/tag: .*/tag: \"${build_version}\"/" helm/app/values.yaml
+                    git config user.email "fatoumatasirasidibe@gmail.com"
+                    git config user.name "ARISAWSS"                    sed -i "s/tag: .*/tag: \"${build_version}\"/" helm/app/values.yaml
                     git add helm/app/values.yaml
                     git commit -m "Update deployment image to version ${build_version}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
